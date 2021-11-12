@@ -1,3 +1,4 @@
+from re import A
 import requests as rq
 import json
 import pandas as p
@@ -5,8 +6,11 @@ import numpy as n
 
 from requests.auth import HTTPBasicAuth
 
+credentials = json.loads(open('/Users/dwhelan/Desktop/Computer Science/Sweng/Github-API-Access/access_and_graphs/creds.json').read())
+auth = HTTPBasicAuth(credentials['username'],credentials['password'])
+
 def top_level():
-    data = rq.get('https://api.github.com/users/' + 'openai')
+    data = rq.get('https://api.github.com/users/' + 'openai',auth=auth)
     data = data.json()
     print("Hunting and Gathering Repo info\n")
     url = data['repos_url']
@@ -41,16 +45,16 @@ def top_level():
 
     print("Hunting and Gathering Language Data\n")
     for i in range(repo_dataframe.shape[0]):
-        resp = rq.get(repo_dataframe.loc([i, 'Languages URL']))
+        resp = rq.get(repo_dataframe.loc[i,'Languages URL'],auth=auth)
         resp = resp.json()
         if resp != {}:
             languages = []
             for key in resp.items():
                 languages.append(key)
-            languages = ', '.join(languages)
-            repo_dataframe.loc[i, 'Languages'] = languages
+            languages = ', '.join(str(v) for v in languages)
+            repo_dataframe.loc[i,'Languages'] = languages
         else:
-            repo_dataframe.loc[i, 'Languages'] = ""
+            repo_dataframe.loc[i,'Languages'] = ""
     print("Languages Hunted and Gathered\n")
     repo_dataframe.to_csv('repos_info.csv', index = False)
     print("Repos saved to repos_info.csv\n")
@@ -61,10 +65,11 @@ def top_level():
         url = repo_dataframe.loc[i, 'Commits URL']
         page = 1
         while(True):
-            resp = rq.get(url)
+            resp = rq.get(url)#,auth=auth)
             resp = resp.json()
             print("URL: {} Commits: {}\n".format(url, len(resp)))
             for c in resp:
+                print(c)
                 commit_data = []
                 commit_data.append(repo_dataframe.loc[i, 'ID'])
                 commit_data.append(repo_dataframe.loc[i, 'Name'])
