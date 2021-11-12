@@ -10,7 +10,7 @@ credentials = json.loads(open('/Users/dwhelan/Desktop/Computer Science/Sweng/Git
 auth = HTTPBasicAuth(credentials['username'],credentials['password'])
 
 def top_level():
-    data = rq.get('https://api.github.com/users/' + 'openai',auth=auth)
+    data = rq.get('https://api.github.com/users/' + credentials['username'],auth=auth)
     data = data.json()
     print("Hunting and Gathering Repo info\n")
     url = data['repos_url']
