@@ -1,17 +1,13 @@
-from re import A
-import requests as rq
 import json
+import requests as rq
 import pandas as p
-import numpy as n
 
-from requests.auth import HTTPBasicAuth
-
-credentials = json.loads(open('/Users/dwhelan/Desktop/Computer Science/Sweng/Github-API-Access/access_and_graphs/creds.json').read())
-auth = HTTPBasicAuth(credentials['username'],credentials['password'])
+credentials = json.loads(open('/Users/dwhelan/Desktop/Computer Science/Sweng/Github-API-Access/access_and_graphs/credentials.json').read())
 
 def top_level():
-    data = rq.get('https://api.github.com/users/' + credentials['username'],auth=auth)
+    data = rq.get('https://api.github.com/users/'+ credentials['username'])
     data = data.json()
+
     print("Hunting and Gathering Repo info\n")
     url = data['repos_url']
     page = 1
@@ -45,7 +41,7 @@ def top_level():
 
     print("Hunting and Gathering Language Data\n")
     for i in range(repo_dataframe.shape[0]):
-        resp = rq.get(repo_dataframe.loc[i,'Languages URL'],auth=auth)
+        resp = rq.get(repo_dataframe.loc[i,'Languages URL'])
         resp = resp.json()
         if resp != {}:
             languages = []
@@ -69,7 +65,6 @@ def top_level():
             resp = resp.json()
             print("URL: {} Commits: {}\n".format(url, len(resp)))
             for c in resp:
-                print(c)
                 commit_data = []
                 commit_data.append(repo_dataframe.loc[i, 'ID'])
                 commit_data.append(repo_dataframe.loc[i, 'Name'])
@@ -83,7 +78,7 @@ def top_level():
                 break
     commits_dataframe = p.DataFrame(commits_info, columns = ['Repo ID','Repo Name','Commit ID','Date'])
     commits_dataframe.to_csv('commits_info.csv', index=False)
-    print("Commits infor saved to commits_info.csv\n")
+    print("Commits info saved to commits_info.csv\n")
 
 if __name__ == "__main__":
     top_level()
