@@ -33,6 +33,7 @@ headerTwo = {
 }
 
 app = dash.Dash(__name__)
+server = app.server 
 app_layout = html.Div(children=[
     html.H1("Github Software Engineering Measurement Graph", style=headerOne),
     html.H2("A Visualisation of " + repos['Owner'][0] + "'s Github Data", style=headerTwo),
@@ -80,9 +81,6 @@ app_layout = html.Div(children=[
         ],className="language_pie")
     ],className="graphs")
 ])
-
-if __name__ == '__main__':
-    app.run_server(debug=True)
 
 
 
