@@ -21,7 +21,6 @@ for l in combo['Languages']:
         for lang in l.split(','):
             list_of_langs.append(lang.strip())
 lang_count = p.Series(list_of_langs)
-print(lang_count)
 
 headerOne = {
     "font-weight" : "bold",
