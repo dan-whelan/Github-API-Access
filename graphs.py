@@ -4,10 +4,13 @@ from dash import html
 import plotly.express as plot
 import pandas as p
 
-repos = p.read_csv("/Users/dwhelan/Desktop/Computer Science/Sweng/Github-API-Access/data/repos_info.csv")
-commits = p.read_csv("/Users/dwhelan/Desktop/Computer Science/Sweng/Github-API-Access/data/commits_info.csv")
 
-
+####################################################################################
+#ADMIN for reading in Data#
+####################################################################################
+#Use own absolute path to access data, Example data is my own Github data#
+repos = p.read_csv("../Github-API-Access/repos_info.csv")
+commits = p.read_csv("../Github-API-Access/commits_info.csv")
 
 commit_number = p.DataFrame(p.merge(repos,commits,how='left',left_on='ID',right_on='Repo ID')).groupby('ID').size().reset_index()
 commit_number.columns = ['ID', 'Commits']
@@ -20,7 +23,7 @@ for l in combo['Languages']:
     if type(l) is str:
         for lang in l.split(','):
             list_of_langs.append(lang.strip())
-lang_count = p.Series(list_of_langs)
+lang_count = p.Series(list_of_langs).value_counts
 
 headerOne = {
     "font-weight" : "bold",
@@ -30,6 +33,10 @@ headerTwo = {
     "font-style" : "italic",
     "text-align" : "center",
 }
+
+####################################################################################
+#END OF ADMIN#
+####################################################################################
 
 app = dash.Dash(__name__)
 server = app.server 
@@ -67,8 +74,8 @@ app_layout = html.Div(children=[
                     'data':[
                         plot.pie(
                             list_of_langs,
-                            names= list_of_langs,
-                            values= lang_count,
+                            names=list_of_langs,
+                            values=lang_count,
                         )
                     ],
                     'layout':{
@@ -81,7 +88,8 @@ app_layout = html.Div(children=[
     ],className="graphs")
 ])
 
-
+if __name__ == '__main__':
+    app.run_server(debug=True)
 
 
     

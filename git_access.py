@@ -2,7 +2,8 @@ import json
 import requests as rq
 import pandas as p
 
-credentials = json.loads(open('/Users/dwhelan/Desktop/Computer Science/Sweng/Github-API-Access/access_and_graphs/credentials.json').read())
+#Fill out credentials.json with user github user credentials whom's data you wish to collect
+credentials = json.loads(open('../credentials.json').read())
 
 def top_level():
     data = rq.get('https://api.github.com/users/'+ credentials['username'])
@@ -61,7 +62,7 @@ def top_level():
         url = repo_dataframe.loc[i, 'Commits URL']
         page = 1
         while(True):
-            resp = rq.get(url)#,auth=auth)
+            resp = rq.get(url)
             resp = resp.json()
             print("URL: {} Commits: {}\n".format(url, len(resp)))
             for c in resp:
